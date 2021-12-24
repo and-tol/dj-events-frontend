@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import styles from '../styles/Header.module.css';
+import styles from '@/styles/Header.module.css';
+import Link from 'next/link';
 
 export const Header = () => {
   return (
@@ -14,7 +14,7 @@ export const Header = () => {
         <ul>
           <li>
             <Link href='/events'>
-              <a >Events</a>
+              <a>Events</a>
             </Link>
           </li>
         </ul>

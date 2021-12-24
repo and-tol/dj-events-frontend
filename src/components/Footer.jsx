@@ -1,4 +1,4 @@
-import styles from '../styles/Footer.module.css';
+import styles from '@/styles/Footer.module.css';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
