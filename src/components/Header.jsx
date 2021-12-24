@@ -1,5 +1,6 @@
 import styles from '@/styles/Header.module.css';
 import Link from 'next/link';
+import { Search } from './Search'
 
 export const Header = () => {
   return (
@@ -9,12 +10,18 @@ export const Header = () => {
           <a>DJ Events</a>
         </Link>
       </div>
+      <Search />
 
       <nav>
         <ul>
           <li>
             <Link href='/events'>
               <a>Events</a>
+            </Link>
+          </li>
+          <li>
+            <Link href='/events/add'>
+              <a>Add Event</a>
             </Link>
           </li>
         </ul>
