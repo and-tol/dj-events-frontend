@@ -4,8 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const EventItem = ({ event }) => {
-  const { url: thumbnail_url } = event.image.data.attributes.formats.thumbnail;
-  const { url: init_image_url } = event.image.data.attributes;
+  const thumbnail_url = event.image.data
+    ? event.image.data.attributes.formats.thumbnail.url
+    : null;
 
   return (
     <div className={styles.event}>
@@ -22,7 +23,8 @@ export const EventItem = ({ event }) => {
       </div>
       <div className={styles.info}>
         <span>
-          {new Date(event.data).toLocaleDateString('en-US')} at {event.time}
+          {event.date && new Date(event.date).toLocaleDateString('en-US')} at{' '}
+          {event.time && event.time}
         </span>
         <h3>{event.name}</h3>
       </div>
