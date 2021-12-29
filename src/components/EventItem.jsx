@@ -7,7 +7,7 @@ export const EventItem = ({ event }) => {
   const thumbnail_url = event.image.data
     ? event.image.data.attributes.formats.thumbnail.url
     : null;
-
+  
   return (
     <div className={styles.event}>
       <div className={styles.img}>

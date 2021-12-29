@@ -18,8 +18,6 @@ export default function AddEventPage() {
     description: '',
   });
 
-  console.log({ data: values });
-
   const router = useRouter();
 
   const handleSubmit = async e => {
@@ -34,10 +32,6 @@ export default function AddEventPage() {
     if (hasEmptyFields) {
       toast.error('Please fill in all fields');
       console.log('Please fill in all fields');
-    }
-
-    const body = {
-      data: values
     }
 
     const res = await fetch(`${API_URL}/api/events`, {

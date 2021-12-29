@@ -3,6 +3,8 @@ import { EventItem } from '@/components/EventItem';
 import { API_URL } from '@/config/index';
 import Link from 'next/link';
 
+import qs from 'qs';
+
 export default function HomePage({ events }) {
   return (
     <Layout>
@@ -21,15 +23,24 @@ export default function HomePage({ events }) {
 }
 
 export async function getStaticProps() {
-  // const res = await fetch(`http://localhost:3002/api/events`);
+  const query = qs.stringify(
+    {
+      sort: ['date:desc'],
+      pagination: {
+        page: 1,
+        pageSize: 3,
+      },
+    },
+    {
+      encodeValuesOnly: true,
+    }
+  );
 
   const res = await fetch(
-    `${API_URL}/api/events?populate=image&sort[0]=data%3Aasc&pagination[limit]=3`
+    // `${API_URL}/api/events?populate=image&sort[0]=date%3Adesc&pagination[page]=1&pagination[pageSize]=3`
+    `${API_URL}/api/events?populate=image&${query}`
   );
   const { data } = await res.json();
-
-  console.log('res', res);
-  console.log('data', data);
 
   if (!data) {
     return {
