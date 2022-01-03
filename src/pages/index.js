@@ -11,7 +11,7 @@ export default function HomePage({ events }) {
       <h1>Upcoming Events</h1>
       {events.length === 0 && <h3>No events to show</h3>}
       {events.map(event => (
-        <EventItem key={event.id} event={event.attributes} />
+        <EventItem key={event.id} event={event} />
       ))}
       {events.length > 0 && (
         <Link href='/events'>
@@ -42,15 +42,23 @@ export async function getStaticProps() {
   );
   const { data } = await res.json();
 
+
   if (!data) {
     return {
       notFound: true,
     };
   }
 
+  const serializeDataImg = data.map(d => ({
+    ...d.attributes,
+    id: d.id,
+    image: d.attributes.image.data
+    ? d.attributes.image.data.attributes.formats
+    : null,
+  }));
+
   return {
-    props: { events: data },
-    // props: { events: data.slice(0, 3) },
+    props: { events: serializeDataImg },
     revalidate: 1,
   };
 }

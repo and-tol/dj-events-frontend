@@ -8,10 +8,10 @@ export const ImageUpload = ({ eventId, imageUploaded }) => {
   const handleSubmit = async e => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('files', image)
-    formData.append('ref', 'events')
-    formData.append('refId', eventId)
-    formData.append('field', 'image')
+    formData.append('files', image);
+    formData.append('ref', 'api::event.event');
+    formData.append('refId', eventId);
+    formData.append('field', 'image');
 
     const res = await fetch(`${API_URL}/api/upload/`, {
       method: 'POST',
@@ -19,7 +19,7 @@ export const ImageUpload = ({ eventId, imageUploaded }) => {
     });
 
     if (res.ok) {
-      imageUploaded()
+      imageUploaded();
     }
   };
   const handleFileChange = e => {

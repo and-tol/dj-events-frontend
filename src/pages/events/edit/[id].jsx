@@ -16,7 +16,6 @@ import Image from 'next/image';
 export default function EditEventPage({ event }) {
   const router = useRouter();
   // console.log('date>>>', format(new Date(event.date), 'yyyy/MM/dd'));
-  console.log('event>>>>', event.image);
   const {
     register,
     handleSubmit,
@@ -70,14 +69,14 @@ export default function EditEventPage({ event }) {
 
   const imageUploaded = async () => {
     console.log('image uploaded');
-    const res = await fetch(`${API_URL}/api/events/${event.id}`)
+    const res = await fetch(`${API_URL}/api/events/${event.id}?populate=image`);
     const { data } = await res.json();
 
     setImagePreview(
       data.attributes.image.data.attributes.formats.thumbnail.url
     );
 
-    setShowModal(false)
+    setShowModal(false);
   };
 
   return (
@@ -155,7 +154,9 @@ export const getServerSideProps = async ctx => {
       event: {
         ...data.attributes,
         id: data.id,
-        image: data.attributes.image.data ? data.attributes.image.data.attributes.formats : null,
+        image: data.attributes.image.data
+          ? data.attributes.image.data.attributes.formats
+          : null,
       },
     },
   };
