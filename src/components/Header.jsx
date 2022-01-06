@@ -7,6 +7,7 @@ import { Search } from './Search';
 
 export const Header = () => {
   const { user, logout } = useContext(AuthContext);
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>

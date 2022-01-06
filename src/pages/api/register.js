@@ -3,20 +3,24 @@ import { API_URL } from '@/config/index';
 
 export default async (req, res) => {
   if (req.method === 'POST') {
-    const { identifier, password } = req.body;
+    const { username,email, password } = req.body;
 
-    const strapiRes = await fetch(`${API_URL}/api/auth/local`, {
+    const strapiRes = await fetch(`${API_URL}/api/auth/local/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        identifier,
+        username,
+        email,
         password,
       }),
     });
 
     const data = await strapiRes.json();
+
+
+    const errorMessages = data.error && data.error.details.errors.map(error => error.message);
 
     if (strapiRes.ok) {
       // Set cookie
@@ -32,7 +36,8 @@ export default async (req, res) => {
       );
       res.status(200).json({ user: data.user });
     } else {
-      res.status(data.error.status).json({ message: data.error.message });
+      res.status(data.error.status).json({ message: errorMessages });
+      // res.status(data.error.status).json({ message: data.error.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);

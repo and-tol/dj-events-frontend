@@ -141,13 +141,16 @@ export default function EditEventPage({ event }) {
   );
 }
 
-export const getServerSideProps = async ctx => {
+export const getServerSideProps = async (ctx, req) => {
   const {
     params: { id },
   } = ctx;
 
   const res = await fetch(`${API_URL}/api/events/${id}?populate=image`);
   const { data } = await res.json();
+
+  // console.log('events request cookie >>>>', ctx.req.headers.cookie);
+  // console.log('cookies >>>>', ctx.req.cookies);
 
   return {
     props: {
