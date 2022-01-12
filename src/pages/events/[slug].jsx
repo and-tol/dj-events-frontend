@@ -7,6 +7,8 @@ import { API_URL } from '@/config/index';
 import styles from '@/styles/Event.module.css';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
+import { serializeData } from '@/helpers/index';
+import qs from 'qs';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function EventPage({ event }) {
@@ -14,9 +16,6 @@ export default function EventPage({ event }) {
 
   if (!event?.attributes?.slug) {
     console.error('Do not have slug');
-  }
-  if (!event || !event.attributes) {
-    console.error(event);
   }
 
   const deleteEvent = async e => {
@@ -33,10 +32,6 @@ export default function EventPage({ event }) {
     }
   };
 
-  const event_images = event.attributes.image.data
-    ? event.attributes.image.data.attributes.formats
-    : null;
-
   return (
     <Layout>
       <div className={styles.event}>
@@ -51,18 +46,17 @@ export default function EventPage({ event }) {
           </a>
         </div>
         <span>
-          {event.attributes.date &&
-            new Date(event.attributes.date).toLocaleDateString('en-US')}{' '}
-          at {event.attributes.time}
+          {event.date && new Date(event.date).toLocaleDateString('en-US')} at{' '}
+          {event.time}
         </span>
-        <h1>{event.attributes.name}</h1>
+        <h1>{event.name}</h1>
 
         <ToastContainer />
 
-        {event.attributes.image.data && (
+        {event.image && (
           <div className={styles.image}>
             <Image
-              src={`${API_URL}${event_images.large.url}`}
+              src={`${API_URL}${event.image.large.url}`}
               width={960}
               height={600}
             />
@@ -70,11 +64,11 @@ export default function EventPage({ event }) {
         )}
 
         <h3>Performers: </h3>
-        <p>{event.attributes.performers}</p>
+        <p>{event.performers}</p>
         <h3>Description:</h3>
-        <p>{event.attributes.description}</p>
-        <h3>Venue: {event.attributes.venue}</h3>
-        <p>{event.attributes.address}</p>
+        <p>{event.description}</p>
+        <h3>Venue: {event.venue}</h3>
+        <p>{event.address}</p>
 
         <EventMap event={event} />
 
@@ -86,42 +80,62 @@ export default function EventPage({ event }) {
   );
 }
 
-export const getStaticPaths = async () => {
-  const res = await fetch(`${API_URL}/api/events?populate=image`);
-  const { data } = await res.json();
+// ! Error occurred prerendering page "/events/[slug]". Read more: https://nextjs.org/docs/messages/prerender-error
+// ! TypeError: Cannot read property 'attributes' of undefined
+// ? Поэтому используем getServerSideProps и запрос на сервер по каждому слагу
 
-  const paths = data.map(event => ({
-    params: { slug: event.attributes.slug ?? '' },
-  }));
+// export const getStaticPaths = async () => {
+//   const res = await fetch(`${API_URL}/api/events?populate=image`);
+//   const { data } = await res.json();
 
-  return {
-    paths,
-    fallback: true,
-  };
-};
+//   const paths = data
+//     ? data.map(event => ({
+//         params: { slug: event.attributes.slug ?? '' },
+//       }))
+//     : [];
 
-export const getStaticProps = async ({ params: { slug } }) => {
-  // const res = await fetch(`${API_URL}/api/events/${slug}`);
-  const res = await fetch(
-    `${API_URL}/api/events?populate=image&filters[slug][$eq]=${slug}`
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
+
+// export const getStaticProps = async ({ params: { slug } }) => {
+//   // const res = await fetch(`${API_URL}/api/events/${slug}`);
+//   const res = await fetch(
+//     `${API_URL}/api/events?populate=image&filters[slug][$eq]=${slug}`
+//   );
+//   const { data } = await res.json();
+
+//   return {
+//     props: {
+//       event: data[0] ?? {},
+//       // event: events[0],
+//     },
+//     revalidate: 1,
+//   };
+// };
+
+export const getServerSideProps = async ({ query: { slug } }) => {
+  const query = qs.stringify(
+    {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      populate: ['image'],
+    },
+    {
+      encodeValuesOnly: true,
+    }
   );
+  const res = await fetch(`${API_URL}/api/events?${query}`);
   const { data } = await res.json();
 
   return {
     props: {
-      event: data[0] ?? {},
-      // event: events[0],
+      event: serializeData(data)[0],
     },
-    revalidate: 1,
   };
 };
-// export const getServerSideProps = async ({ query:{slug} }) => {
-//   const res = await fetch(`${API_URL}/api/events/${slug}`);
-//   const events = await res.json();
-
-//   return {
-//     props: {
-//       event: events[0],
-//     },
-//   };
-// };

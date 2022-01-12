@@ -20,7 +20,7 @@ export const EventMap = ({ event }) => {
 
   useEffect(() => {
     // Get latitude & longitude from address.
-    Geocode.fromAddress(event.attributes.address).then(
+    Geocode.fromAddress(event.address).then(
       response => {
         const { lat, lng } = response.results[0].geometry.location;
         setLat(lat);

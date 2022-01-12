@@ -30,6 +30,7 @@ export async function getStaticProps() {
         page: 1,
         pageSize: 3,
       },
+      populate: ['image']
     },
     {
       encodeValuesOnly: true,
@@ -38,7 +39,7 @@ export async function getStaticProps() {
 
   const res = await fetch(
     // `${API_URL}/api/events?populate=image&sort[0]=date%3Adesc&pagination[page]=1&pagination[pageSize]=3`
-    `${API_URL}/api/events?populate=image&${query}`
+    `${API_URL}/api/events?${query}`
   );
   const { data } = await res.json();
 
