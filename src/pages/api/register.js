@@ -19,6 +19,7 @@ export default async (req, res) => {
 
     const data = await strapiRes.json();
 
+    console.log('register data', data);
 
     const errorMessages = data.error && data.error.details.errors.map(error => error.message);
 

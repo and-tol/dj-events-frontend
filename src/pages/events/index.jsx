@@ -5,10 +5,6 @@ import { Pagination } from '@/components/Pagination';
 import { API_URL, PER_PAGE } from '@/config/index';
 
 export default function EventsPage({ events, page, total }) {
-  // console.log('events >>>', events);
-  // console.log('page >>>', page);
-  // console.log('total >>>', total);
-
   return (
     <Layout>
       <h1>Events</h1>
