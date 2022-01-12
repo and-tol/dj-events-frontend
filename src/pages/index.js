@@ -30,19 +30,15 @@ export async function getStaticProps() {
         page: 1,
         pageSize: 3,
       },
-      populate: ['image']
+      populate: ['image'],
     },
     {
       encodeValuesOnly: true,
     }
   );
 
-  const res = await fetch(
-    // `${API_URL}/api/events?populate=image&sort[0]=date%3Adesc&pagination[page]=1&pagination[pageSize]=3`
-    `${API_URL}/api/events?${query}`
-  );
+  const res = await fetch(`${API_URL}/api/events?${query}`);
   const { data } = await res.json();
-
 
   if (!data) {
     return {
@@ -54,8 +50,8 @@ export async function getStaticProps() {
     ...d.attributes,
     id: d.id,
     image: d.attributes.image.data
-    ? d.attributes.image.data.attributes.formats
-    : null,
+      ? d.attributes.image.data.attributes.formats
+      : null,
   }));
 
   return {
