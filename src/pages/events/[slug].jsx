@@ -2,6 +2,7 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/Layout';
+import { EventMap } from '@/components/EventMap';
 import { API_URL } from '@/config/index';
 import styles from '@/styles/Event.module.css';
 import Image from 'next/image';
@@ -10,6 +11,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function EventPage({ event }) {
   const router = useRouter();
+
+  if (!event?.attributes?.slug) {
+    console.error('Do not have slug');
+  }
+  if (!event || !event.attributes) {
+    console.error(event);
+  }
 
   const deleteEvent = async e => {
     if (confirm('Are you sure you want to delete?')) {
@@ -68,6 +76,8 @@ export default function EventPage({ event }) {
         <h3>Venue: {event.attributes.venue}</h3>
         <p>{event.attributes.address}</p>
 
+        <EventMap event={event} />
+
         <Link href='/events'>
           <a className={styles.back}>{'<'} Go Back</a>
         </Link>
@@ -81,7 +91,7 @@ export const getStaticPaths = async () => {
   const { data } = await res.json();
 
   const paths = data.map(event => ({
-    params: { slug: event.attributes.slug },
+    params: { slug: event.attributes.slug ?? '' },
   }));
 
   return {
@@ -99,7 +109,7 @@ export const getStaticProps = async ({ params: { slug } }) => {
 
   return {
     props: {
-      event: data[0],
+      event: data[0] ?? {},
       // event: events[0],
     },
     revalidate: 1,

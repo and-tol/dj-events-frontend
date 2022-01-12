@@ -1,14 +1,13 @@
-import { parseCookies } from '@/helpers/index';
-import { Layout } from '@/components/Layout';
 import { DashboardEvent } from '@/components/DashboardEvent';
+import { Layout } from '@/components/Layout';
 import { API_URL } from '@/config/index';
+import { parseCookies } from '@/helpers/index';
 import styles from '@/styles/Dashboard.module.css';
 
 export default function DashboardPage({ events }) {
-  const deleteEvent = (id) => {
+  const deleteEvent = id => {
     console.log(id);
-
-  }
+  };
 
   return (
     <Layout title='User Dashboard'>
@@ -31,6 +30,8 @@ export default function DashboardPage({ events }) {
 export const getServerSideProps = async ctx => {
   const { req } = ctx;
   const { token } = parseCookies(req);
+
+  console.log('token dshboard >>>', token)
 
   const res = await fetch(`${API_URL}/api/events/me`, {
     method: 'GET',

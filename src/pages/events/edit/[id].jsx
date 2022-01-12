@@ -1,3 +1,4 @@
+import { parseCookies } from '@/helpers/index';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { FaImage } from 'react-icons/fa';
@@ -15,7 +16,6 @@ import Image from 'next/image';
 
 export default function EditEventPage({ event }) {
   const router = useRouter();
-  // console.log('date>>>', format(new Date(event.date), 'yyyy/MM/dd'));
   const {
     register,
     handleSubmit,
@@ -57,6 +57,10 @@ export default function EditEventPage({ event }) {
     });
 
     if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error('Unauthorized.');
+        return;
+      }
       toast.error('Somethink went wrong. Please try again.');
     } else {
       const {
@@ -68,7 +72,7 @@ export default function EditEventPage({ event }) {
   };
 
   const imageUploaded = async () => {
-    console.log('image uploaded');
+    console.info('image uploaded');
     const res = await fetch(`${API_URL}/api/events/${event.id}?populate=image`);
     const { data } = await res.json();
 
@@ -141,10 +145,13 @@ export default function EditEventPage({ event }) {
   );
 }
 
-export const getServerSideProps = async (ctx, req) => {
+export const getServerSideProps = async ctx => {
   const {
     params: { id },
+    req,
   } = ctx;
+
+  const { token } = parseCookies(req);
 
   const res = await fetch(`${API_URL}/api/events/${id}?populate=image`);
   const { data } = await res.json();
@@ -161,6 +168,7 @@ export const getServerSideProps = async (ctx, req) => {
           ? data.attributes.image.data.attributes.formats
           : null,
       },
+      token
     },
   };
 };
