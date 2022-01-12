@@ -5,7 +5,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Geocode from 'react-geocode';
 
 export const EventMap = ({ event }) => {
-  console.log(event)
   // Latitude
   const [lat, setLat] = useState(null);
   // Longitude
@@ -42,18 +41,19 @@ export const EventMap = ({ event }) => {
   Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY);
 
   if (loading) {
-    return false
+    return false;
   }
-  console.log(lat, lng);
 
   return (
     <ReactMapGL
       {...viewport}
-      mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN} onViewStateChange={(vp)=>setViewport(vp)}
+      mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
+      onViewStateChange={vp => setViewport(vp)}
+      width='100%'
+      height='500px'
     >
-      <Marker key={event.id} latitude={lat} longitude={lng} >
-        hello world
-        <Image src='/public/images/pin.svg' width='30' height='30' />
+      <Marker key={event.id} latitude={lat} longitude={lng}>
+        <Image src='/images/pin.svg' width='30' height='30' />
       </Marker>
     </ReactMapGL>
   );
